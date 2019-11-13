@@ -1,0 +1,2 @@
+# mvncleaner
+用来清除maven本地仓库目录下无用jar包和无用文件
