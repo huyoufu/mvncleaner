@@ -55,33 +55,58 @@ func parseConfig4repoDir(home string) string {
 	}
 	return v.LocalRepository
 }
+func add(ori []string, source string) []string {
+	if len(ori) == 0 {
+		ori = append(ori, source)
+	} else {
+		flag := false
+		for _, x := range ori {
+			if strings.Contains(source, x) {
+				flag = true
+				break
+			}
+		}
+		if !flag {
+			ori = append(ori, source)
+		}
+	}
+
+	return ori
+}
 
 func clean(dir string) {
 
+	list4delx := make([]string, 0)
 	filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
 		if strings.Contains(path, "unknown") || strings.Contains(path, "/error") {
-			fmt.Println("正在删除文件/文件夹:", path)
-			delErr := os.RemoveAll(path)
-			if delErr != nil {
-				fmt.Println(delErr)
-			}
+			fmt.Println("正在收集待文件夹:", path)
+			list4delx = add(list4delx, path)
 		}
 		if b, _ := regexp.MatchString("\\$\\{.*\\}", path); b {
-			fmt.Println("正在删除文件/文件夹:", path)
-			os.RemoveAll(path)
+			fmt.Println("正在收集待正在删除文件/文件夹:", path)
+			list4delx = add(list4delx, path)
 		}
 
 		if strings.Contains(path, "lastUpdated") {
-			fmt.Println("正在删除文件/文件夹:", path)
-			delErr := os.Remove(path)
-			if delErr != nil {
-				fmt.Println(delErr)
-			}
+			fmt.Println("正在收集待删除文件/文件夹:", path)
+
+			list4delx = add(list4delx, path)
 		}
 
 		return err
 	})
+
+	if len(list4delx) > 0 {
+		fmt.Println("开始删除文件夹/文件!!!!")
+		for _, x := range list4delx {
+			os.RemoveAll(x)
+			fmt.Println("删除文件夹/文件:" + x)
+		}
+	}
 
 }
 func GetMavenHome() string {
