@@ -11,14 +11,26 @@ import (
 	"strings"
 )
 
-func main() {
+type MavenRepoNoFindEror struct {
+}
 
+func (e *MavenRepoNoFindEror) Error() string {
+	return "maven的仓库目录不存在!请告知maven仓库位置"
+}
+
+func main() {
 	dir := getRepoDir()
 	clean(dir)
-
+	fmt.Println("清理完成!!!!!")
+	gotoExit()
 }
-func getRepoDir() string {
-	repoDir := ""
+func gotoExit() {
+	fmt.Println("输入任意内容退出!")
+	var s string
+	fmt.Scan(&s)
+	os.Exit(1)
+}
+func getRepoDir() (repoDir string) {
 	args := os.Args
 	if len(args) > 1 {
 		repoDir = args[1]
@@ -28,10 +40,17 @@ func getRepoDir() string {
 		home := GetMavenHome()
 		if home == "" {
 			fmt.Println("没有找到MAVEN的安装目录.如果不想设置 可以执行命名的时候 传入maven的目录参数(推荐此参数)!!!")
-			os.Exit(0)
+			gotoExit()
+
 		}
 
 		repoDir = parseConfig4repoDir(home)
+
+	}
+	_, err := os.Lstat(repoDir)
+	if err != nil {
+		fmt.Printf("找不到该文件目录:%s\n", repoDir)
+		gotoExit()
 	}
 	return repoDir
 }
@@ -83,20 +102,18 @@ func clean(dir string) {
 			return err
 		}
 		if strings.Contains(path, "unknown") || strings.Contains(path, "/error") {
-			fmt.Println("正在收集待文件夹:", path)
+			fmt.Println("正在收集待删除文件/文件夹:", path)
 			list4delx = add(list4delx, path)
 		}
 		if b, _ := regexp.MatchString("\\$\\{.*\\}", path); b {
-			fmt.Println("正在收集待正在删除文件/文件夹:", path)
+			fmt.Println("正在收集待删除文件/文件夹:", path)
 			list4delx = add(list4delx, path)
 		}
 
 		if strings.Contains(path, "lastUpdated") {
 			fmt.Println("正在收集待删除文件/文件夹:", path)
-
 			list4delx = add(list4delx, path)
 		}
-
 		return err
 	})
 
