@@ -1,7 +1,7 @@
 # mvncleaner
 用来清除maven本地仓库目录下无用jar包和无用文件
 
-###1.下载
+### 1.下载
 [戳我下载](https://github.com/huyoufu/mvncleaner/releases)-https://github.com/huyoufu/mvncleaner/releases
 
 ### 2.使用
@@ -14,7 +14,7 @@
 
 ```shell
 #window平台
-./mvncleaner_window.exe 你的maven仓库的目录
+mvncleaner_window.exe 你的maven仓库的目录
 #macosx平台
 ./mvncleaner_mac 你的maven仓库的目录
 ```
