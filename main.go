@@ -4,6 +4,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"github.com/huyoufu/mvncleaner/config"
+	"github.com/nsf/termbox-go"
+	_ "github.com/nsf/termbox-go"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -11,24 +13,38 @@ import (
 	"strings"
 )
 
-type MavenRepoNoFindEror struct {
+func init() {
+	if err := termbox.Init(); err != nil {
+		panic(err)
+	}
+	termbox.SetCursor(0, 0)
+	termbox.HideCursor()
+}
+func pause() {
+	fmt.Println("请按任意键继续...")
+Loop:
+	for {
+		switch ev := termbox.PollEvent(); ev.Type {
+		case termbox.EventKey:
+			break Loop
+		}
+	}
 }
 
-func (e *MavenRepoNoFindEror) Error() string {
+type MavenRepoNoFindError struct {
+}
+
+func (e *MavenRepoNoFindError) Error() string {
 	return "maven的仓库目录不存在!请告知maven仓库位置"
 }
 
 func main() {
+
 	dir := getRepoDir()
 	clean(dir)
 	fmt.Println("清理完成!!!!!")
-	gotoExit()
-}
-func gotoExit() {
-	fmt.Println("输入任意内容退出!")
-	var s string
-	fmt.Scan(&s)
-	os.Exit(1)
+	pause()
+
 }
 func getRepoDir() (repoDir string) {
 	args := os.Args
@@ -40,7 +56,7 @@ func getRepoDir() (repoDir string) {
 		home := GetMavenHome()
 		if home == "" {
 			fmt.Println("没有找到MAVEN的安装目录.如果不想设置 可以执行命名的时候 传入maven的目录参数(推荐此参数)!!!")
-			gotoExit()
+			pause()
 
 		}
 
@@ -50,7 +66,7 @@ func getRepoDir() (repoDir string) {
 	_, err := os.Lstat(repoDir)
 	if err != nil {
 		fmt.Printf("找不到该文件目录:%s\n", repoDir)
-		gotoExit()
+		pause()
 	}
 	return repoDir
 }
@@ -101,10 +117,13 @@ func clean(dir string) {
 			fmt.Println(err)
 			return err
 		}
-		if strings.Contains(path, "unknown") || strings.Contains(path, "/error") {
+
+		if strings.Contains(path, "unknown") || strings.Contains(path, (string(os.PathSeparator))+"error") {
 			fmt.Println("正在收集待删除文件/文件夹:", path)
 			list4delx = add(list4delx, path)
 		}
+		//匹配删除 无用的 ${xxx-version}之类的无用文件夹
+
 		if b, _ := regexp.MatchString("\\$\\{.*\\}", path); b {
 			fmt.Println("正在收集待删除文件/文件夹:", path)
 			list4delx = add(list4delx, path)
@@ -117,6 +136,18 @@ func clean(dir string) {
 		return err
 	})
 
+	if len(list4delx) > 0 {
+		fmt.Println("开始删除文件夹/文件!!!!")
+		for _, x := range list4delx {
+			os.RemoveAll(x)
+			fmt.Println("删除文件夹/文件:" + x)
+		}
+	}
+
+	//删除无用的文件夹
+	count := 0
+	count, list4delx = collectEmpty(dir)
+	fmt.Printf("共有%d个文件\r\n", count)
 	if len(list4delx) > 0 {
 		fmt.Println("开始删除文件夹/文件!!!!")
 		for _, x := range list4delx {

@@ -5,15 +5,15 @@
 SET CGO_ENABLED=0
 SET GOOS=linux
 SET GOARCH=amd64
-go  build -o mvncleaner main.go
+go  build -o mvncleaner *.go
 ##编译为macosx
 SET CGO_ENABLED=0
 SET GOOS=darwin
 SET GOARCH=amd64
-go build -o mvncleaner main.go
+go build -o mvncleaner *.go
 ##编译为windows
 SET GOOS=windows
-go build -o mvncleaner.exe  main.go
+go build -o mvncleaner.exe  *.go
 ```
 
 ### macosx
