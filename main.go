@@ -31,6 +31,8 @@ Loop:
 			break Loop
 		}
 	}
+	//执行结束后关键 termbox
+	termbox.Close()
 }
 
 type MavenRepoNoFindError struct {
