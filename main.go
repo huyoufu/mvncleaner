@@ -10,7 +10,9 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 )
 
 func init() {
@@ -39,10 +41,12 @@ func (e *MavenRepoNoFindError) Error() string {
 }
 
 func main() {
-
+	start := time.Now()
 	dir := getRepoDir()
 	clean(dir)
-	fmt.Println("清理完成!!!!!")
+	end := time.Now()
+	i := end.Unix() - start.Unix()
+	fmt.Printf("清理完成!!!!!,共花费了%d秒\n", i)
 	pause()
 
 }
@@ -110,29 +114,67 @@ func add(ori []string, source string) []string {
 }
 
 func clean(dir string) {
-
+	//没被删除 就可以保存了
+	indexFile, isNew := getIndexFile()
+	defer indexFile.Close()
+	index := readIndex()
 	list4delx := make([]string, 0)
 	filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			fmt.Println(err)
 			return err
 		}
+		//标识是否是否可以被记录索引文件中
+		flag := true
 
 		if strings.Contains(path, "unknown") || strings.Contains(path, (string(os.PathSeparator))+"error") {
 			fmt.Println("正在收集待删除文件/文件夹:", path)
 			list4delx = add(list4delx, path)
+			flag = false
 		}
 		//匹配删除 无用的 ${xxx-version}之类的无用文件夹
 
 		if b, _ := regexp.MatchString("\\$\\{.*\\}", path); b {
 			fmt.Println("正在收集待删除文件/文件夹:", path)
 			list4delx = add(list4delx, path)
+			flag = false
 		}
 
 		if strings.Contains(path, "lastUpdated") {
 			fmt.Println("正在收集待删除文件/文件夹:", path)
 			list4delx = add(list4delx, path)
+			flag = false
 		}
+
+		if !isNew {
+
+			if checkModify(index, path, info) {
+				//这就是修改了!!!!!
+				fmt.Println("这个文件", path, "被修改了!!!")
+
+			}
+		}
+
+		if flag {
+
+			//如果是是文件 且新创建的索引文件
+			if isNew && !info.IsDir() {
+				//fmt.Println("当前文件名字",path)
+
+				//判断文件类型是否正确
+
+				//time := info.ModTime().Format("2006-01-02 15:04:05")
+				time := info.ModTime().Unix()
+
+				_, err := indexFile.WriteString(path + "=" + strconv.FormatInt(time, 10) + "\n")
+				if err != nil {
+					fmt.Println("写入内容失败了!", path, err)
+				}
+			} else {
+
+			}
+		}
+
 		return err
 	})
 
@@ -157,6 +199,19 @@ func clean(dir string) {
 	}
 
 }
+func checkModify(index map[string]int64, path string, info os.FileInfo) bool {
+	//有索引文件就得判断了
+	time := index[path]
+	if time != 0 {
+		//有值的话 就判断更新时间
+		if info.ModTime().Unix() > time {
+			//说明有修改了
+			return true
+		}
+	}
+	return false
+}
+
 func GetMavenHome() string {
 	home := os.Getenv("M2_HOME")
 	if home == "" {
