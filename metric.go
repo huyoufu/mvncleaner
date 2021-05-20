@@ -8,13 +8,8 @@ import (
 )
 
 type MCMetric struct {
+	//版本号
 	version string
-	//开始时间
-	start int64
-	//结束时间
-	end int64
-	//花费的毫秒值
-	costTime int64
 	//检索文件个数
 	sumFileNum int64
 	//没问题的文件数
@@ -25,6 +20,32 @@ type MCMetric struct {
 	indexFileNum int64
 	//jar文件数
 	jarFileNum int64
+}
+
+var defaultMCMetric MCMetric = MCMetric{
+	version:       "2.0.0",
+	sumFileNum:    0,
+	commonFileNum: 0,
+	errFileNum:    0,
+	indexFileNum:  0,
+	jarFileNum:    0,
+}
+
+func (m *MCMetric) IncrCommonFileNum() {
+	m.sumFileNum++
+	m.commonFileNum++
+}
+func (m *MCMetric) IncrErrFileNum() {
+	m.sumFileNum++
+	m.errFileNum++
+}
+func (m *MCMetric) IncrIndexFileNum() {
+	m.sumFileNum++
+	m.indexFileNum++
+}
+func (m *MCMetric) IncrJarFileNum() {
+	m.sumFileNum++
+	m.jarFileNum++
 }
 
 type StepInfo struct {
@@ -49,11 +70,11 @@ type TimerTrack struct {
 	end int64
 	//花费的时间 如果设置isMs 为true 则得到是毫秒 否则是纳秒
 	costTime int64
-	//
+	//是否以毫秒输出
 	isMs bool
 }
 
-var DefaultTimerTrack *TimerTrack = &TimerTrack{
+var defaultTimerTrack *TimerTrack = &TimerTrack{
 	stepNameMid: "step-",
 	steps:       []StepInfo{},
 	isMs:        true,
@@ -107,6 +128,10 @@ func (t *TimerTrack) End() {
 
 //返回共花费了多久
 func (t *TimerTrack) Cost() int64 {
+	if t.start == 0 {
+		//如果都没开始 直接返回0 就行了
+		return 0
+	}
 	if t.end == 0 {
 		t.End()
 	}
