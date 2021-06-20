@@ -1,0 +1,8 @@
+Changes in version 2.0.0:
+- 修复 移除了一个文件是否是错误文件的依据中 对于 error 字符串的判断
+  理由是google errorprone 这个jar包的存在.
+- 添加 更加完善的信息统计功能
+
+- Fixed the "error" string being removed from the basis of whether a file is an error file
+  The reason is the existence of the Google errorprone JAR package.
+- Add more complete information statistics function

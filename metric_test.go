@@ -8,7 +8,7 @@ import (
 )
 
 func TestPrintMetric(t *testing.T) {
-
+	printMetric()
 }
 
 func TestTimerTrack_NextStepNum(t *testing.T) {
@@ -17,27 +17,27 @@ func TestTimerTrack_NextStepNum(t *testing.T) {
 	fmt.Println(tt.stepNum)
 }
 func TestTimerTrack_PrintBeautiful(t *testing.T) {
-	DefaultTimerTrack.Start()
+	defaultTimerTrack.Start()
 	time.Sleep(time.Second)
-	DefaultTimerTrack.Step()
-	DefaultTimerTrack.Step()
+	defaultTimerTrack.Step()
+	defaultTimerTrack.Step()
 	time.Sleep(time.Second)
-	DefaultTimerTrack.Step()
-	DefaultTimerTrack.End()
+	defaultTimerTrack.Step()
+	defaultTimerTrack.End()
 
-	DefaultTimerTrack.PrintBeautiful()
+	defaultTimerTrack.PrintBeautiful()
 
 }
 
 func TestTimerTrack_Cost(t *testing.T) {
-	DefaultTimerTrack.Start()
+	defaultTimerTrack.Start()
 	time.Sleep(time.Second)
-	DefaultTimerTrack.Step()
-	DefaultTimerTrack.Step()
+	defaultTimerTrack.Step()
+	defaultTimerTrack.Step()
 	time.Sleep(time.Second)
-	DefaultTimerTrack.Step()
-	DefaultTimerTrack.End()
-	cost := DefaultTimerTrack.Cost()
+	defaultTimerTrack.Step()
+	defaultTimerTrack.End()
+	cost := defaultTimerTrack.Cost()
 	fmt.Printf("共花费了%d ms\n", cost)
 }
 

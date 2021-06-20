@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const INDEXFILENAME = "index.mc"
+const IndexFileName = "index.mc"
 
 type MCIndex struct {
 	_index    map[string]int64
@@ -108,7 +108,7 @@ func getIndexFile() (*os.File, bool) {
 			}
 		}
 	}
-	indexFilePath := path.Join(indexPath, INDEXFILENAME)
+	indexFilePath := path.Join(indexPath, IndexFileName)
 
 	var indexFile *os.File
 	_, err2 := os.Stat(indexFilePath)
@@ -209,7 +209,7 @@ func writeIndexInitInfo(indexFile *os.File) {
 		"**        create file time: " + now + "                           **\n" +
 		"**        the program author is huyoufu                                   **\n" +
 		"**        mailto:371778981@qq.com                                         **\n" +
-		"**        websit: http://www.jk1123.com                                   **\n" +
+		"**        website: http://www.jk1123.com                                  **\n" +
 		"**        github: https://www.github.com/huyoufu/mvcleaner                **\n" +
 		"**                                                                        **\n" +
 		"**                                                                        **\n" +
