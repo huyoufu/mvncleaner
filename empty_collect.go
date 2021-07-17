@@ -6,21 +6,22 @@ import (
 	"path/filepath"
 )
 
-func collectEmpty(path string) (int, []string) {
+func collectEmpty(path, repoDir string) (int, []string) {
 	var count int = 0
 	list4edl := make([]string, 0, 2)
 	fis, _ := readDirNames(path)
 	for _, f := range fis {
 		//fmt.Println(f.Name())
 		if f.IsDir() {
-			ca, del4a := collectEmpty(filepath.Join(path, f.Name()))
+			ca, del4a := collectEmpty(filepath.Join(path, f.Name()), repoDir)
 			count += ca
 			list4edl = append(list4edl, del4a...)
 		} else {
 			count++
 		}
 	}
-	if count == 0 {
+	if count == 0 && path != repoDir {
+
 		fmt.Println("正在收集空文件夹:" + path)
 		list4edl = append(list4edl, path)
 	}
