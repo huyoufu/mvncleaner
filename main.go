@@ -102,11 +102,14 @@ func clean(dir string) {
 
 	//删除无用的文件夹
 
-	_, list4del = collectEmpty(dir)
+	_, list4del = collectEmpty(dir, dir)
 	//fmt.Printf("共有%d个文件\r\n", count)
 	if len(list4del) > 0 {
 		fmt.Println("开始删除文件夹/文件!!!!")
 		for _, x := range list4del {
+			if dir == x {
+				continue
+			}
 			os.RemoveAll(x)
 			defaultMCMetric.IncrErrFileNum()
 			fmt.Println("删除文件夹/文件:" + x)
