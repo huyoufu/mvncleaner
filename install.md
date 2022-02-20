@@ -13,14 +13,14 @@ set GOARCH=amd64
 go build -o mvncleaner github.com/huyoufu/mvncleaner
 ##编译为windows
 SET GOOS=windows
-go build -o mvncleaner github.com/huyoufu/mvncleaner
+go build -o mvncleaner.exe github.com/huyoufu/mvncleaner
 ```
 
 ### macosx
 
 ```shell
 ##编译为windows
-CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o mvncleaner github.com/huyoufu/mvncleaner
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o mvncleaner.exe github.com/huyoufu/mvncleaner
 ##编译为linux
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o mvncleaner github.com/huyoufu/mvncleaner
 ```
@@ -29,7 +29,7 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o mvncleaner github.com/huyoufu/
 
 ```shell
 ##编译为windows
-CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o mvncleaner github.com/huyoufu/mvncleaner
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o mvncleaner.exe github.com/huyoufu/mvncleaner
 ##编译为macosx
 CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o mvncleaner github.com/huyoufu/mvncleaner
 ```
