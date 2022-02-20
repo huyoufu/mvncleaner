@@ -9,6 +9,6 @@ import (
 func TestGetIndexFile(t *testing.T) {
 
 	file, _ := getIndexFile()
-	fmt.Println(file)
+	fmt.Println(file.Name())
 
 }
