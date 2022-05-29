@@ -66,14 +66,17 @@ func checkXmlFileType(path string) bool {
 	reader := bufio.NewReader(file)
 
 	line, err := reader.ReadString('\n')
+	if line == "" {
+		line, err = reader.ReadString('\n')
+	}
 	if err != nil {
 		return false
 	} else {
 		//严格意义上说 一个标准的xml文件 就是应该 <?xml开头 但是有些 shit code 不按照规矩来 上来给你写个注释..
-		b := strings.Contains(line, "<?xml") || strings.Contains(line, "<project>") || strings.Contains(line, "<!--")
+		b := strings.Contains(line, "<?xml") || strings.Contains(line, "<project") || strings.Contains(line, "<!--")
 		if !b {
 			//正在检查的文件存在问题
-			fmt.Printf("正在检查的文件%s 不是xml文件 请仔细检查~~~\n", path)
+			fmt.Printf("正在检查的文件%s 不是正常的pom文件 请仔细检查~~~\n", path)
 		}
 		return b
 	}

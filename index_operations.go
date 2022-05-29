@@ -96,7 +96,7 @@ func (i *MCIndex) destroy() {
 //创建索引文件
 func getIndexFile() (*os.File, bool) {
 	userHome, _ := os.UserHomeDir()
-	indexPath := path.Join(userHome, "mvncleaner")
+	indexPath := path.Join(userHome, ".mvncleaner")
 
 	_, err := os.Stat(indexPath)
 	if err != nil {
