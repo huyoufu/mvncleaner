@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"github.com/huyoufu/mvncleaner/config"
+	"github.com/huyoufu/mvncleaner/log"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -28,6 +29,7 @@ func (f *MCRFinder) GetRepo() string {
 
 		//没有指明路径参数 获取maven的安装目录
 		home := GetMavenHome()
+		log.Info("根据环境变量MAVEN_HOME/M2_HOME 得到maven软件的家目录:" + home)
 		if home == "" {
 			fmt.Println("没有找到MAVEN的安装目录.如果不想设置MAVEN_HOME 可以执行命令的时候 传入MAVEN的本地仓库目录!!!")
 			pause()
@@ -72,14 +74,15 @@ func parseConfig4repoDir(home string) string {
 	if err != nil {
 		fmt.Printf("error: %v", err)
 	}
+
 	return v.LocalRepository
 }
 
 //获取环境变量中的MAVEN_HOME
 func GetMavenHome() string {
-	home := os.Getenv("M2_HOME")
+	home := os.Getenv("MAVEN_HOME")
 	if home == "" {
-		home = os.Getenv("MAVEN_HOME")
+		home = os.Getenv("M2_HOME")
 	}
 	return home
 }

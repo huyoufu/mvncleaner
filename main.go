@@ -32,7 +32,7 @@ func printMetric() {
 		"**                                                                        **\n" +
 		"**                                                                        **\n" +
 		"**                                                                        **\n" +
-		"**        github: https://www.github.com/huyoufu/mvncleaner                **\n" +
+		"**        github: https://www.github.com/huyoufu/mvncleaner_mac              **\n" +
 		"**        点个赞呗                                                        **\n" +
 		"**                                                                        **\n" +
 		"****************************************************************************\n"

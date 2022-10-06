@@ -96,7 +96,9 @@ func (i *MCIndex) destroy() {
 //创建索引文件
 func getIndexFile() (*os.File, bool) {
 	userHome, _ := os.UserHomeDir()
-	indexPath := path.Join(userHome, "mvncleaner")
+	//将默认生成的见的索引文件放在用户的家目录下.mvncleaner中
+	//而不是mvncleaner文件中,这样子避免跟可执行程序文件同名的问题
+	indexPath := path.Join(userHome, ".mvncleaner")
 
 	_, err := os.Stat(indexPath)
 	if err != nil {
